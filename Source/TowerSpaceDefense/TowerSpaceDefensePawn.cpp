@@ -91,14 +91,6 @@ void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
     // Move plan forwards (with sweep so we stop when we collide with things)
     AddActorWorldOffset(GlobalMove, true);
     
-    // Counting down
-    Countdown--;
-    if (Countdown < 0)
-    {
-        Countdown = 100;
-        
-        spawnBullet();
-    }
     
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -125,6 +117,8 @@ void ATowerSpaceDefensePawn::SetupPlayerInputComponent(class UInputComponent* In
 	InputComponent->BindAxis("LookUp", this, &ATowerSpaceDefensePawn::LookUpInput);
     InputComponent->BindAxis("LookRight", this, &ATowerSpaceDefensePawn::LookRightInput);
     InputComponent->BindAxis("RollRight", this, &ATowerSpaceDefensePawn::RollRightInput);
+    
+    InputComponent->BindAction("Shoot", IE_Pressed, this, &ATowerSpaceDefensePawn::spawnBullet);
 }
 
 void ATowerSpaceDefensePawn::MoveForwardInput(float Val)
