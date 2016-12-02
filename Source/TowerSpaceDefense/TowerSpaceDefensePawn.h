@@ -70,13 +70,16 @@ private:
 	float MinSpeed;
 
 	/** Current forward speed */
-	float CurrentForwardSpeed;
+	float CurrentLocalForwardThrust;
     
     /** Current right speed */
-    float CurrentRightSpeed;
+    float CurrentLocalRightThrust;
     
     /** Current up speed */
-    float CurrentUpSpeed;
+    float CurrentLocalUpThrust;
+    
+    /** Current global speed */
+    FVector CurrentGlobalSpeed;
 
 	/** Current yaw speed */
 	float CurrentYawSpeed;

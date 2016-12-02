@@ -39,14 +39,17 @@ ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
 	TurnSpeed = 50.f;
 	MaxSpeed = 4000.f;
     MinSpeed = -MaxSpeed;
-	CurrentForwardSpeed = 0.f;
-    CurrentRightSpeed = 0.f;
-    CurrentUpSpeed = 0.f;
+	CurrentLocalForwardThrust = 0.f;
+    CurrentLocalRightThrust = 0.f;
+    CurrentLocalUpThrust = 0.f;
+    CurrentGlobalSpeed = FVector(0,0,0);
 }
 
 void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
 {
-	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaSeconds, CurrentRightSpeed * DeltaSeconds, CurrentUpSpeed * DeltaSeconds);
+    
+    // Vector of local thrusts
+    const FVector LocalThrust = FVector(CurrentLocalForwardThrust, CurrentLocalRightThrust, CurrentLocalUpThrust);
 
 	// Calculate change in rotation this frame
 	FRotator DeltaRotation(0,0,0);
@@ -57,14 +60,21 @@ void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
 	// Rotate plane
 	AddActorLocalRotation(DeltaRotation);
     
-    //FRotator worldRot = GetActorRotation();
-    //FVector deltaWorldOffset = worldRot.RotateVector(LocalMove);
+    // Get Global Rotation
+    const FRotator GlobalRot = GetActorRotation();
     
+    // Rotate local thrust to global thrust
+    const FVector GlobalThrust = GlobalRot.RotateVector(LocalThrust);
     
-    // Move plan forwards (with sweep so we stop when we collide with things)
-    AddActorLocalOffset(LocalMove, true);
+    // Update global speed
+    CurrentGlobalSpeed += GlobalThrust * DeltaSeconds;
     
+    // Calculate global move
+    const FVector GlobalMove = CurrentGlobalSpeed * DeltaSeconds;
 
+    // Move plan forwards (with sweep so we stop when we collide with things)
+    AddActorWorldOffset(GlobalMove, true);
+    
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
 }
@@ -96,31 +106,31 @@ void ATowerSpaceDefensePawn::MoveForwardInput(float Val)
 {
 	
 	// Set Acceleration
-	float CurrentAcc = (Val * Acceleration);
+	CurrentLocalForwardThrust = (Val * Acceleration);
 	// Calculate new speed
-	float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
+	//float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
 	// Clamp between MinSpeed and MaxSpeed
-	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, MinSpeed, MaxSpeed);
+	//CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, MinSpeed, MaxSpeed);
 }
 
 void ATowerSpaceDefensePawn::MoveRightInput(float Val)
 {
     // If input is not held down, reduce speed
-    float CurrentAcc = (Val * Acceleration);
+    CurrentLocalRightThrust = (Val * Acceleration);
     // Calculate new speed
-    float NewRightSpeed = CurrentRightSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
+    //float NewRightSpeed = CurrentRightSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
     // Clamp between MinSpeed and MaxSpeed
-    CurrentRightSpeed = FMath::Clamp(NewRightSpeed, MinSpeed, MaxSpeed);
+    //CurrentRightSpeed = FMath::Clamp(NewRightSpeed, MinSpeed, MaxSpeed);
 }
 
 void ATowerSpaceDefensePawn::MoveUpInput(float Val)
 {
     // If input is not held down, reduce speed
-    float CurrentAcc = (Val * Acceleration);
+    CurrentLocalUpThrust = (Val * Acceleration);
     // Calculate new speed
-    float NewUpSpeed = CurrentUpSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
+    //float NewUpSpeed = CurrentUpSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
     // Clamp between MinSpeed and MaxSpeed
-    CurrentUpSpeed = FMath::Clamp(NewUpSpeed, MinSpeed, MaxSpeed);
+    //CurrentUpSpeed = FMath::Clamp(NewUpSpeed, MinSpeed, MaxSpeed);
 }
 
 void ATowerSpaceDefensePawn::LookUpInput(float Val)
