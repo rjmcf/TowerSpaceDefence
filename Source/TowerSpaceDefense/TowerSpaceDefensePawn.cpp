@@ -39,15 +39,15 @@ ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
     Planet = nullptr;
 
 	// Set handling parameters
-	Acceleration = 500.f;
+	Acceleration = 5000.f;
 	TurnSpeed = 50.f;
-	MaxSpeed = 4000.f;
+	MaxSpeed = 2000.f;
     MinSpeed = -MaxSpeed;
 	CurrentLocalForwardThrust = 0.f;
     CurrentLocalRightThrust = 0.f;
     CurrentLocalUpThrust = 0.f;
     CurrentGlobalSpeed = FVector(0,0,0);
-    Gravity = 500.f;
+    Gravity = 20000.f;
 }
 
 void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
@@ -81,6 +81,7 @@ void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
     
     // Update global speed
     CurrentGlobalSpeed += GlobalThrust * DeltaSeconds;
+    CurrentGlobalSpeed = CurrentGlobalSpeed.GetClampedToSize(MinSpeed, MaxSpeed);
     
     // Calculate global move
     const FVector GlobalMove = CurrentGlobalSpeed * DeltaSeconds;
