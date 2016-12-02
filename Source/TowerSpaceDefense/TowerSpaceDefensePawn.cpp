@@ -2,6 +2,7 @@
 
 #include "TowerSpaceDefense.h"
 #include "TowerSpaceDefensePawn.h"
+#include "EngineUtils.h"
 
 ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
 {
@@ -33,6 +34,9 @@ ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
+    
+    // Initialise Planet
+    Planet = nullptr;
 
 	// Set handling parameters
 	Acceleration = 500.f;
@@ -43,6 +47,7 @@ ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
     CurrentLocalRightThrust = 0.f;
     CurrentLocalUpThrust = 0.f;
     CurrentGlobalSpeed = FVector(0,0,0);
+    Gravity = 500.f;
 }
 
 void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
@@ -64,7 +69,15 @@ void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
     const FRotator GlobalRot = GetActorRotation();
     
     // Rotate local thrust to global thrust
-    const FVector GlobalThrust = GlobalRot.RotateVector(LocalThrust);
+    FVector GlobalThrust = GlobalRot.RotateVector(LocalThrust);
+    
+    // Setup Gravity Force
+    if (Planet)
+    {
+        FVector toPlanet = (Planet->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+    
+        GlobalThrust += toPlanet * DeltaSeconds * Gravity;
+    }
     
     // Update global speed
     CurrentGlobalSpeed += GlobalThrust * DeltaSeconds;

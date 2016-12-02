@@ -19,6 +19,11 @@ class ATowerSpaceDefensePawn : public APawn
 	/** Camera component that will be our viewpoint */
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
+    
+    /** Planet reference for gravity */
+    UPROPERTY(Category = Planet, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    class AActor* Planet;
+    
 public:
 	ATowerSpaceDefensePawn();
 
@@ -89,6 +94,9 @@ private:
 
 	/** Current roll speed */
 	float CurrentRollSpeed;
+    
+    /** Gravity Strength */
+    float Gravity;
 
 public:
 	/** Returns PlaneMesh subobject **/
