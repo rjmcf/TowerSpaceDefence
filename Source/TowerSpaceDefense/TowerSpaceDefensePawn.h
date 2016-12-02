@@ -24,6 +24,10 @@ class ATowerSpaceDefensePawn : public APawn
     UPROPERTY(Category = Planet, EditAnywhere, meta = (AllowPrivateAccess = "true"))
     class AActor* Planet;
     
+    /** Bullet reference */
+    UPROPERTY(Category = Firing, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<AActor> ProjectileClass;
+    
 public:
 	ATowerSpaceDefensePawn();
 
@@ -55,6 +59,9 @@ protected:
     
     /** Bound to the roll axis */
     void RollRightInput(float Val);
+    
+    /* For spawning bullets */
+    void spawnBullet();
 
 private:
 
@@ -97,6 +104,9 @@ private:
     
     /** Gravity Strength */
     float Gravity;
+    
+    /** Period until bullet spawn */
+    int Countdown;
 
 public:
 	/** Returns PlaneMesh subobject **/

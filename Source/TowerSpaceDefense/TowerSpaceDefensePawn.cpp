@@ -48,6 +48,8 @@ ATowerSpaceDefensePawn::ATowerSpaceDefensePawn()
     CurrentLocalUpThrust = 0.f;
     CurrentGlobalSpeed = FVector(0,0,0);
     Gravity = 20000.f;
+    
+    Countdown = 100.f;
 }
 
 void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
@@ -88,6 +90,15 @@ void ATowerSpaceDefensePawn::Tick(float DeltaSeconds)
 
     // Move plan forwards (with sweep so we stop when we collide with things)
     AddActorWorldOffset(GlobalMove, true);
+    
+    // Counting down
+    Countdown--;
+    if (Countdown < 0)
+    {
+        Countdown = 100;
+        
+        spawnBullet();
+    }
     
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -186,4 +197,9 @@ void ATowerSpaceDefensePawn::RollRightInput(float Val)
     
     // Smoothly interpolate to target roll speed
     CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, TargetRollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+}
+
+void ATowerSpaceDefensePawn::spawnBullet()
+{
+    AActor *lA = GetWorld()->SpawnActor<AActor>(ProjectileClass, GetActorLocation() + 200 * GetActorForwardVector(), GetActorRotation());
 }
