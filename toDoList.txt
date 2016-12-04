@@ -1,0 +1,15 @@
+- Set lighting to be from one side like sun.
+- Add light to front of ship.
+- Make planet rotate.
+- Give more design to planet and cities and enemies.
+- Make game First Person.
+- Fix projectiles (so they always fire).
+- Decide how projectiles work (do they have mass, range etc).
+- Add sky box and sun etc.
+- Add menus, game over state, pause state etc.
+- Decide if enemies need health or can be one-shotted.
+- Make enemies aim for cities.
+- Make enemies explode.
+- Make cities take damage and be killed.
+- Add points system.
+
